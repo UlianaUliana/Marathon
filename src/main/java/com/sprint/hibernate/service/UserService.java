@@ -1,6 +1,7 @@
 package com.sprint.hibernate.service;
 
 import com.sprint.hibernate.entity.Marathon;
+import com.sprint.hibernate.entity.Role;
 import com.sprint.hibernate.entity.Task;
 import com.sprint.hibernate.entity.User;
 import com.sprint.hibernate.repository.UserRepository;
@@ -14,13 +15,13 @@ public interface UserService {
 
     User getUserById(long userId);
 
-    User createOrUpdateUser(User input) throws NoSuchFieldException, IllegalAccessException;
+    User createOrUpdateUser(User input);
 
-    List<User> getAllByRole (String role);
+    List<User> getAllByRoleId (long roleId);
 
     boolean addUserToMarathon(User user, Marathon marathon);
 
-    List<User> allUsersByMarathonIdAndRole(long id, String role);
+    List<User> allUsersByMarathonIdAndRoleId(long id, long roleId);
 
     void deleteUserById(long id);
     void deleteAll();

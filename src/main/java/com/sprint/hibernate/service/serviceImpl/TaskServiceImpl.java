@@ -31,7 +31,7 @@ public class TaskServiceImpl implements TaskService {
                 newTask.setTitle(task.getTitle());
                 newTask.setCreated(task.getCreated());
                 newTask.setUpdated(task.getUpdated());
-                newTask.setProgress(task.getProgress());
+                newTask.setProgresses(task.getProgresses());
                 newTask.setSprint(task.getSprint());
                 newTask = taskRepository.save(newTask);
                 return newTask;
@@ -41,7 +41,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public boolean addTaskToSprint(Task task, Sprint sprint) throws TaskExistException {
+    public boolean addTaskToSprint(Task task, Sprint sprint){
         if(checkTitle(task.getTitle())) {
             throw new TaskExistException("Task with this title already exists");
         }

@@ -3,6 +3,7 @@ package com.sprint.hibernate.controller;
 
 import com.sprint.hibernate.entity.User;
 import com.sprint.hibernate.service.MarathonService;
+import com.sprint.hibernate.service.RoleService;
 import com.sprint.hibernate.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,13 +24,14 @@ public class StudentController {
 
     private UserService userService;
     private MarathonService marathonService;
+    private RoleService roleService;
     private final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @GetMapping
     public String getAllStudents(Model model) {
-        logger.info("Get all students from marathon");
-        List<User> students = userService.getAllByRole("TRAINEE");
-        User newStudent = User.builder().role(User.Role.TRAINEE).build();
+        logger.info("Get all students");
+        List<User> students = userService.getAllByRoleId(1L);
+        User newStudent = new User();
         model.addAttribute("newStudent", newStudent);
         model.addAttribute("students", students);
         return "students";
@@ -38,11 +40,13 @@ public class StudentController {
     @GetMapping("/{marathon_id}")
     public String getAllStudentsFromMarathon(@PathVariable(name = "marathon_id") long marathonId, Model model) {
         logger.info("Getting all students from the marathon");
-        List<User> students = userService.allUsersByMarathonIdAndRole(marathonId, "TRAINEE");
-        User newStudent = new User();
-        model.addAttribute("newStudent", newStudent);
+        List<User> students = userService.allUsersByMarathonIdAndRoleId(marathonId, 1L);
+        List<User> allStudents = userService.getAll();
+        User addStudent = new User().builder().role(roleService.getRoleById(1L)).build();
+        model.addAttribute("addStudent", addStudent);
         model.addAttribute("students", students);
         model.addAttribute("marathon", marathonService.getMarathonById(marathonId));
+        model.addAttribute("allStudents", allStudents);
         return "marathon-students";
     }
 
@@ -56,48 +60,54 @@ public class StudentController {
 
     @GetMapping("/delete/{student_id}")
     public String removeStudent(@PathVariable(name = "student_id") long studentId) {
-//        logger.info("Deleting student");
-//        userService.deleteUserById(studentId);
-//        return "redirect:/students";
-        throw new RuntimeException();
+        logger.info("Deleting student");
+        userService.deleteUserById(studentId);
+        return "redirect:/students";
+//        throw new RuntimeException();
     }
 
-    @PostMapping("/edit/{student_id}")
-    public String saveEditedStudent(@PathVariable(name = "student_id") long studentId,
-                                    @ModelAttribute(name = "student") User student) {
-        logger.info("Editing student");
-        try {
-            student.setId(studentId);
-            student.setRole(User.Role.TRAINEE);
+    @RequestMapping(value = "/edit", method = {RequestMethod.PUT, RequestMethod.GET})
+    public String saveEditedStudent(User student) {
+            logger.info("Editing student");
+            student.setRole(roleService.getRoleById(1L));
             userService.createOrUpdateUser(student);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
         return "redirect:/students";
     }
 
-
-    @PostMapping("/add/{marathon_id}")
-    public String addStudentToMarathon(@PathVariable(name = "marathon_id") long marathonId,
-                                       @ModelAttribute(name = "student") User student) {
-        logger.info("Adding student to the marathon");
-        student.setRole(User.Role.valueOf("TRAINEE"));
-        try {
-            userService.createOrUpdateUser(student);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        userService.addUserToMarathon(student, marathonService.getMarathonById(marathonId));
+    @GetMapping("/{marathon_id}/add")
+    public String addExistingStudentToMarathon(@RequestParam("user_id") long userId, @PathVariable("marathon_id") long marathonId) {
+        userService.addUserToMarathon(
+                userService.getUserById(userId),
+                marathonService.getMarathonById(marathonId));
         return "redirect:/students/{marathon_id}";
     }
-
-    @GetMapping("/student")
-//    @GetMapping("/student/{student_id}")
+    @PostMapping("/add")
+    public String createStudent(@ModelAttribute(name="newStudent") User student) {
+            student.setRole(roleService.getRoleById(1L));
+            userService.createOrUpdateUser(student);
+        return "redirect:/students/";
+    }
+    @PostMapping("/{marathon_id}/add")
+    public String addStudentToMarathon(@ModelAttribute(name="newStudent") User student,
+                                       @PathVariable(name="marathon_id")long marathonId) {
+        student.setRole(roleService.getRoleById(1L));
+        userService.createOrUpdateUser(student);
+        userService.addUserToMarathon(student,
+                marathonService.getMarathonById(marathonId));
+        return "redirect:/students/"+ marathonId;
+    }
+    @GetMapping("/student/{student_id}")
     public String getInfoAboutStudent(@PathVariable(name = "student_id") long studentId, Model model) {
         logger.info("Getting info about student");
         User student = userService.getUserById(studentId);
         model.addAttribute("student", student);
         return "student";
+    }
+
+    @RequestMapping("/getOne")
+    @ResponseBody
+    public User getOne(Long id){
+        return userService.getUserById(id);
     }
 }
 

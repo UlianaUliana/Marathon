@@ -38,7 +38,10 @@
                     Close
                 </a>
             </td>
-            <td><a th:href="@{/tasks/{sprint_id}(sprint_id=${sprint.getId()})}">Tasks</a></td>
+
+            <td>
+                <a th:href="@{/tasks/{sprint_id}(sprint_id=${sprint.getId()})}">Tasks</a>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -59,7 +62,6 @@
             </div>
         </div>
     </div>
-
 
 </div>
 </body>

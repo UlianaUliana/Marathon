@@ -2,24 +2,24 @@ package com.sprint.hibernate.entity;
 
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDate;
+
 @Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Table(name = "progress")
 public class Progress {
 
     public enum TaskStatus {
         PASS, FAIL, PENDING
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -36,10 +36,11 @@ public class Progress {
     @CreationTimestamp
     private LocalDate updated;
 
-    @OneToOne
+    @ToString.Exclude
+    @ManyToOne
     private Task task;
 
+    @ToString.Exclude
     @ManyToOne(optional = false)
     private User trainee;
-
 }
