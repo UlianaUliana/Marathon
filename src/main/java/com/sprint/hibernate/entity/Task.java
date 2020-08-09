@@ -1,16 +1,17 @@
 package com.sprint.hibernate.entity;
 
 import com.sun.istack.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @Entity
@@ -34,6 +35,6 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     private Sprint sprint;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Progress progress;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Progress> progresses;
 }
