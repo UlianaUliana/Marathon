@@ -63,7 +63,6 @@ public class StudentController {
         logger.info("Deleting student");
         userService.deleteUserById(studentId);
         return "redirect:/students";
-//        throw new RuntimeException();
     }
 
     @RequestMapping(value = "/edit", method = {RequestMethod.PUT, RequestMethod.GET})

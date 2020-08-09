@@ -5,14 +5,14 @@ import com.sprint.hibernate.exceptions.MarathonExistException;
 import com.sprint.hibernate.exceptions.MarathonNotFoundByIDException;
 import com.sprint.hibernate.repository.MarathonRepository;
 import com.sprint.hibernate.service.MarathonService;
-import com.sprint.hibernate.service.SprintService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 @Transactional
@@ -37,6 +37,7 @@ public class MarathonServiceImpl implements MarathonService {
                 new MarathonNotFoundByIDException(String.format("No marathon exist with given id = %d", id)));
     }
 
+    @PreAuthorize("hasAuthority('MENTOR')")
     @SneakyThrows
     @Override
     public Marathon createOrUpdate(Marathon input){
@@ -51,16 +52,18 @@ public class MarathonServiceImpl implements MarathonService {
         return newMarathon;
     }
 
-
+    @PreAuthorize("hasAuthority('MENTOR')")
     @Override
     public void deleteMarathonById(long id) {
         marathonRepository.deleteById(id);
     }
 
+    @PreAuthorize("hasAuthority('MENTOR')")
     public void deleteAll(){
         marathonRepository.deleteAll();
     }
 
+    @PreAuthorize("hasAuthority('MENTOR')")
     @Override
     public boolean checkTitle(String title) {
         return marathonRepository.getMarathonByTitle(title)!=null;

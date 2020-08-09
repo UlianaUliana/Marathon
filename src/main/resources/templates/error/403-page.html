@@ -1,7 +1,9 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
 
     <!-- Bootstrap CSS -->
@@ -19,34 +21,13 @@
     <script crossorigin="anonymous"
             integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
-    <title>List of tasks</title>
+    <title>Marathon List Directory</title>
 </head>
-<body>
-<div th:replace="fragments/header.html :: header"/>
-<div class="container">
-    <h2 th:text="${sprint.getTitle()}"></h2>
-    <table class="table table-bordered table-striped">
-        <thead class="thead-dark">
-        <tr>
-            <th>Task</th>
-            <th>Created</th>
-            <th>Updated</th>
-        </tr>
-        <tbody>
-        <tr th:each="task: ${tasks}">
-            <td th:text="${task.getTitle()}"/>
-            <td th:text="${task.getCreated()}"/>
-            <td th:text="${task.getUpdated()}"/>
-        </tr>
-        </tbody>
-    </table>
 
-    <a class="btn btn-info btn-sm"
-       th:href="@{/home}">
-        Main page
-    </a>
-</div>
+<body>
+
+<div th:replace="fragments/header.html :: header"/>
+<p></p>
+<h1>You don't have permission to access this resource</h1>
 </body>
 </html>
-
